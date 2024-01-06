@@ -1,0 +1,4 @@
+name: MoreMotivation
+version: '${project.version}'
+main: cn.postudio.moremotivation.main
+api-version: '1.20'
