@@ -11,17 +11,17 @@ public final class main extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getLogger().info("[PoStudio]MoreMotivation is active!");
+        getLogger().info("Plugin is active!");
     }
 
     @Override
     public void onLoad(){
-        getLogger().info("[PoStudio]MoreMotivation is loading~");
+        getLogger().info("Plugin is loading~");
     }
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        getLogger().info("[PoStudio]MoreMotivation is inactive!");
+        getLogger().info("Plugin is inactive!");
     }
 
     public void regEvent(){
