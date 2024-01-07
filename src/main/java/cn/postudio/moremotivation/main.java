@@ -1,5 +1,6 @@
 package cn.postudio.moremotivation;
 
+import cn.postudio.moremotivation.Event.ToolUnbreakable;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,6 +12,7 @@ public final class main extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        regEvent();
         getLogger().info("Plugin is active!");
     }
 
@@ -25,6 +27,6 @@ public final class main extends JavaPlugin {
     }
 
     public void regEvent(){
-
+        getServer().getPluginManager().registerEvents(new ToolUnbreakable(), getPlugin());
     }
 }
