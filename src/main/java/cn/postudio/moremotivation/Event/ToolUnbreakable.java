@@ -1,6 +1,5 @@
 package cn.postudio.moremotivation.Event;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -9,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public class ToolUnbreakable implements Listener{
         Item item = e.getItem();
         LivingEntity livingEntity = e.getEntity();
 
-        int index = -1;
+        int index;
 
         ItemStack itemStack = item.getItemStack();
         if (tools.contains(itemStack)) {
@@ -36,9 +36,13 @@ public class ToolUnbreakable implements Listener{
                 Inventory inventory = player.getInventory();
                 index = inventory.first(itemStack);
                 ItemMeta itemMeta = itemStack.getItemMeta();
+                //检测是否不可破坏
                 if (!itemMeta.isUnbreakable()) {
                     itemMeta.setUnbreakable(true);
                 }
+                //隐藏不必要的标签
+                itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_DYE, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_UNBREAKABLE);
+
                 itemStack.setItemMeta(itemMeta);
                 if (index != -1) {
                     inventory.setItem(index, itemStack);
