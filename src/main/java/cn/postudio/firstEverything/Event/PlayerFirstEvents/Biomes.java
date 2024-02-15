@@ -1,41 +1,32 @@
 package cn.postudio.firstEverything.Event.PlayerFirstEvents;
 
 import cn.postudio.firstEverything.FileFunction;
+import cn.postudio.firstEverything.LangHandler;
 import cn.postudio.firstEverything.main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Biomes implements Listener {
-
-    public static @Nullable List<String> getPlayerBiomeStringList(@NotNull OfflinePlayer offlinePlayer, World.@NotNull Environment environment){
-        UUID uuid = offlinePlayer.getUniqueId();
-        File file = new File(main.getDataFolderPathString() + "/PlayerData/", uuid + ".yml");
-        FileConfiguration cfg = FileFunction.getFileCfg(file);
-        switch (environment){
-            case NORMAL: return cfg.getStringList("Experience.Biomes.World");
-            case NETHER: return cfg.getStringList("Experience.Biomes.Nether");
-            case THE_END: return cfg.getStringList("Experience.Biomes.TheEnd");
-            default: return null;
-        }
-    }
-
+    Biome biome;
     @EventHandler
     public void PlayerFirstAttendBiomes(@NotNull PlayerMoveEvent event){
-        OfflinePlayer offlinePlayer = event.getPlayer();
+        Player player = event.getPlayer();
         Location location = event.getTo();
+        UUID uuid = player.getUniqueId();
+        File file = FileFunction.getFile("/PlayerData/" + uuid, "yml");
         World world = Bukkit.getWorld("world");
         World nether = Bukkit.getWorld("world_nether");
         World theEnd = Bukkit.getWorld("world_the_end");
@@ -43,40 +34,69 @@ public class Biomes implements Listener {
         assert nether != null;
         assert theEnd != null;
 
-        Biome worldbiome = world.getBiome(location);
-        Biome netherbiome = nether.getBiome(location);
-        Biome theEndbiome = theEnd.getBiome(location);
-        List<String> worldlist = getPlayerBiomeStringList(offlinePlayer, World.Environment.NORMAL);
-        List<String> netherlist = getPlayerBiomeStringList(offlinePlayer, World.Environment.NETHER);
-        List<String> theEndlist = getPlayerBiomeStringList(offlinePlayer, World.Environment.THE_END);
         try{
-            assert worldlist != null;
-            assert netherlist != null;
-            assert theEndlist != null;
             if (location.getWorld() == world) {
+                Biome worldbiome = world.getBiome(location);
+                List<String> worldlist = getPlayerBiomeStringList(player, World.Environment.NORMAL);
+                assert worldlist != null;
                 if (!worldlist.contains(worldbiome.getKey().asString())) {
-                    UUID uuid = offlinePlayer.getUniqueId();
-                    FileFunction.f = new File(main.getDataFolderPathString() + "/PlayerData/", uuid + ".yml");
+                    biome = worldbiome;
+                    if (!worldlist.contains(biome.getKey().asString())){
+                        main.message = LangHandler.getLangContent("event.player.biomes");
+                        main.message = main.message.replace("%Biomes_Name%", handleBiomesKeyToName(biome.getKey().asString()));
+                        player.sendMessage(main.message);
+                    }
                     worldlist.add(worldbiome.getKey().asString());
-                    FileFunction.writeYAMLFile(FileFunction.f, "Experience.Biomes.World", worldlist);
+                    FileFunction.writeYAMLFile(file, "Experience.Biomes.World", worldlist);
                 }
             }
             if (location.getWorld() == nether){
+                Biome netherbiome = nether.getBiome(location);
+                List<String> netherlist = getPlayerBiomeStringList(player, World.Environment.NETHER);
+                assert netherlist != null;
                 if (!netherlist.contains(netherbiome.getKey().asString())) {
-                    UUID uuid = offlinePlayer.getUniqueId();
-                    FileFunction.f = new File(main.getDataFolderPathString() + "/PlayerData/", uuid + ".yml");
+                    biome = netherbiome;
+                    if (!netherlist.contains(biome.getKey().asString())){
+                        main.message = LangHandler.getLangContent("event.player.biomes");
+                        main.message = main.message.replace("%Biomes_Name%", handleBiomesKeyToName(biome.getKey().asString()));
+                        player.sendMessage(main.message);
+                    }
                     netherlist.add(netherbiome.getKey().asString());
-                    FileFunction.writeYAMLFile(FileFunction.f, "Experience.Biomes.Nether", netherlist);
+                    FileFunction.writeYAMLFile(file, "Experience.Biomes.Nether", netherlist);
+
                 }
             }
             if (location.getWorld() == theEnd){
+                Biome theEndbiome = theEnd.getBiome(location);
+                List<String> theEndlist = getPlayerBiomeStringList(player, World.Environment.THE_END);
+                assert theEndlist != null;
                 if (!theEndlist.contains(theEndbiome.getKey().asString())) {
-                    UUID uuid = offlinePlayer.getUniqueId();
-                    FileFunction.f = new File(main.getDataFolderPathString() + "/PlayerData/", uuid + ".yml");
+                    biome = theEndbiome;
+                    if (!theEndlist.contains(biome.getKey().asString())){
+                        main.message = LangHandler.getLangContent("event.player.biomes");
+                        main.message = main.message.replace("%Biomes_Name%", handleBiomesKeyToName(biome.getKey().asString()));
+                        player.sendMessage(main.message);
+                    }
                     theEndlist.add(theEndbiome.getKey().asString());
-                    FileFunction.writeYAMLFile(FileFunction.f, "Experience.Biomes.TheEnd", netherlist);
+                    FileFunction.writeYAMLFile(file, "Experience.Biomes.TheEnd", theEndlist);
                 }
             }
-        }catch (IOException ignored){}
+        }catch (IOException | InvalidConfigurationException ignored){}
+    }
+
+    private static @Nullable List<String> getPlayerBiomeStringList(@NotNull Player player, World.@NotNull Environment environment){
+        UUID uuid = player.getUniqueId();
+        File file = new File(main.getDataFolderPathString() + "/PlayerData/", uuid + ".yml");
+        FileConfiguration cfg = FileFunction.getFileCfg(file);
+        switch (environment){
+            case NORMAL: return cfg.getStringList("Experience.Biomes.World");
+            case NETHER: return cfg.getStringList("Experience.Biomes.Nether");
+            case THE_END: return cfg.getStringList("Experience.Biomes.TheEnd");
+        }
+        return null;
+    }
+
+    private static @NotNull String handleBiomesKeyToName(@NotNull String biomesKey){
+        return LangHandler.getLangContent(biomesKey);
     }
 }

@@ -1,7 +1,6 @@
 package cn.postudio.firstEverything.Event.PlayerFirstEvents;
 
 import cn.postudio.firstEverything.FileFunction;
-import cn.postudio.firstEverything.main;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
@@ -16,9 +15,9 @@ import java.util.UUID;
 
 public class AttendServer implements Listener {
 
-    public void PlayerInitialization(@NotNull OfflinePlayer offlinePlayer){
+    private void PlayerInitialization(@NotNull OfflinePlayer offlinePlayer){
         UUID uuid = offlinePlayer.getUniqueId();
-        File file = new File(main.getDataFolderPathString() + "/PlayerData/", uuid + ".yml");
+        File file = FileFunction.getFile("/PlayerData/" + uuid, "yml");
         FileConfiguration cfg = FileFunction.getFileCfg(file);
         try {
             if (!FileFunction.CreateNewFile(file)){
@@ -36,10 +35,6 @@ public class AttendServer implements Listener {
     public void PlayerFistAttendServer(@NotNull PlayerJoinEvent event){
         OfflinePlayer offlinePlayer = event.getPlayer();
         PlayerInitialization(offlinePlayer);
-
-
-
-
     }
 
 }

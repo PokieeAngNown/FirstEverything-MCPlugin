@@ -1,5 +1,6 @@
 package cn.postudio.firstEverything;
 
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Contract;
@@ -9,9 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class FileFunction {
-    public static File f = new File("");
-    public static FileConfiguration cfg = YamlConfiguration.loadConfiguration(f);
-
+    private static File f = new File("");
 
     public static @NotNull Boolean CreateNewFile(String name, String suffix) throws IOException {
         f = new File(main.getDataFolderPathString(), name + "." +suffix);
@@ -28,14 +27,15 @@ public class FileFunction {
         return new File(main.getDataFolderPathString(),name + "." + suffix);
     }
 
-    public static FileConfiguration getFileCfg(File file){
+    public static @NotNull FileConfiguration getFileCfg(File file){
         f = file;
-        return cfg;
+        return YamlConfiguration.loadConfiguration(f);
     }
 
-    public static void writeYAMLFile(File file, String key, Object object) throws IOException {
+    public static void writeYAMLFile(File file, String key, Object object) throws IOException, InvalidConfigurationException {
         f = file;
-        cfg.set(key, object);
-        cfg.save(file);
+        FileConfiguration fileConfiguration = getFileCfg(f);
+        fileConfiguration.set(key, object);
+        fileConfiguration.save(file);
     }
 }

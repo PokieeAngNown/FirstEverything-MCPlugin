@@ -7,15 +7,16 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.*;
 
 public final class main extends JavaPlugin {
+    public static String message;
     public static @NotNull String getDataFolderPathString(){
         return getPlugin().getDataFolder().getPath();
     }
     public static Plugin getPlugin(){
-        return Bukkit.getPluginManager().getPlugin("MoreMotivation");
+        return Bukkit.getPluginManager().getPlugin("FirstEverything");
     }
     @Override
     public void onEnable() {
@@ -27,6 +28,7 @@ public final class main extends JavaPlugin {
 
     @Override
     public void onLoad(){
+        // Plugin onload logic
         getLogger().info("Plugin is loading~");
     }
     @Override
@@ -41,6 +43,8 @@ public final class main extends JavaPlugin {
     }
 
     public void InitializationPluginFile(){
+        this.saveResource("config.yml", false);
+        this.saveResource("lang/en-US.yml", true);
         Path path;
         try {
             path = Paths.get(getDataFolderPathString(), "PlayerData");

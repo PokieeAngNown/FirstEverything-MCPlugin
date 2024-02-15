@@ -1,4 +1,4 @@
 name: FirstEverything
 version: ${project.version}
-main: cn.postudio.moremotivation.main
+main: cn.postudio.firstEverything.main
 api-version: '1.20'
